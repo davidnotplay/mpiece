@@ -1,0 +1,8 @@
+*.egg-info
+*.pyc
+*.pyo
+.tox
+__pycache__
+dist
+run
+build
