@@ -26,10 +26,12 @@ setup(
 	author_email="dcasadomartinez@gmail.com",
 	description="Customizable and fast Markdown parser in pure Python",
 	long_description=long_description,
-	url='https://github.com/davidnotplay/markdown_advance',
+	url='https://github.com/davidnotplay/mpiece',
 	platforms="any",
 	license="BSD",
 	zip_safe=False,
+	keywords="markdown html parser",
+	test_suite="tests",
 	classifiers=[
 		'Development Status :: 4 - Beta',
 		'Environment :: Web Environment',

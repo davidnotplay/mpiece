@@ -1,5 +1,27 @@
 #!/bin/python
 
+"""
+	show.py
+	~~~~~~~
+
+	Script to converts markdown text in html code and show it in a web browser.
+
+	This script only is use to show the markdown text in a web browser.
+	This script isn't necessary to use mpiece package.
+
+	Command options:
+		- Show help:
+			- $ show.py --help
+
+		- Converts filename in html code and show it in a web browser.
+			- $ show.py "filename_inside data directory".
+			- $ show.py "absolute_filename".
+
+	:license: BSD, see LICENSE for details.
+	:author: David Casado Martinez <dcasadomartinez@gmail.com>
+"""
+
+
 import sys
 import os
 import webbrowser
@@ -55,7 +77,6 @@ if __name__ == "__main__":
 		'<link href="%s" rel="stylesheet" type="text/css"></head>'
 		'<body>%s</body>'
 	) % (style_filename, text)
-
 
 	with open(os.path.join(dir_base, 'index.html'), 'w') as f:
 		f.write(html)
