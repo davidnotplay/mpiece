@@ -28,7 +28,6 @@ Features
 - **More**. Table, footnotes, fenced code.
 
 
-
 Indices and tables
 ==================
 

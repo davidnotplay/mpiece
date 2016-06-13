@@ -5,9 +5,11 @@ Fast and very customizable markdown parser in pure Python.
 Features
 --------
 
-* **Pure Python**.  Tested in Python 2.7+, Python 3.3+ and PyPy.
-* **Customizable**. You can add custom markdown tags and modify the output.
-* **More**. Table, footnotes, fenced code.
+- **Pure Python**.  Tested in Python 2.7+, Python 3.3+ and PyPy.
+- **Very fast**.
+- **Customizable**. You can add new markdown grammar and modify the output.
+- **More**. Table, footnotes, fenced code.
+
 
 Install
 -------
@@ -33,4 +35,8 @@ Basic Usage
    # output: <p><strong>Hello world!!!</strong></p>
 
 
-*more info soon.*
+Documentation
+-------------
+
+`Official documentation <http://mpiece.readthedocs.io/>`_
+
