@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
+# encoding: utf-8
 # MPiece documentation build configuration file, created by
 # sphinx-quickstart on Mon Jun 13 00:19:50 2016.
 #
@@ -275,7 +275,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'MPiece.tex', 'MPiece Documentation',
-     'David Casado Martínez', 'manual'),
+     u'David Casado Martínez', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
