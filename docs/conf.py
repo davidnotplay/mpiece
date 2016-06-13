@@ -64,8 +64,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'MPiece'
-copyright = '2016, David Casado Martínez'
-author = 'David Casado Martínez'
+copyright = u'2016, David Casado Martínez'
+author = u'David Casado Martínez'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
