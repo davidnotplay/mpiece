@@ -29,6 +29,11 @@ _underline *italic* ~strike~_
 ~_underline and strike_~
 `code inline`
 
+`code inline **no bold**`
+`code inline *no italic* and _no underline_`
+`code inline ![no image](http://src)`
+`code inline [no link](http://link)`
+
 
 ![image 1](http://image1) and ![image 2](http://image2)
 

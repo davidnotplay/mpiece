@@ -14,7 +14,24 @@ import re
 no_space = re.compile('\s+')
 
 
-class MdaTest(unittest.TestCase):
+class TestRenderer(HtmlRenderer):
+
+	def render_fenced_code(self, code, lang='', title=''):
+		lang, title, code = self.escape_args(lang, title, code)
+
+		if lang and title:
+			title = 'Code %s: %s' % (lang, title)
+		elif lang:
+			title = 'Code %s' % lang
+		elif title:
+			title = 'Code: %s' % title
+		else:
+			title = 'Code'
+
+		return '<div>%s<pre>%s</pre></div>' % (title, code)
+
+
+class MPieceTests(unittest.TestCase):
 	def setUp(self):
 		self.maxDiff = None
 		self.test_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -39,7 +56,7 @@ class MdaTest(unittest.TestCase):
 		text = self.get_file_text(md_filename)
 
 		lexer = lexer or Lexer()
-		renderer = renderer or HtmlRenderer()
+		renderer = renderer or TestRenderer()
 		text = markdown(text, lexer=lexer, renderer=renderer)
 
 		html = self.transform_text(html)
@@ -80,3 +97,9 @@ class MdaTest(unittest.TestCase):
 	def test_no_escape(self):
 		renderer = HtmlRenderer(escape_html=False)
 		self.compare('test_no_escape.html', 'test_no_escape.md', renderer=renderer)
+
+	def test_utf_characters(self):
+		self.compare('test_utf_characters.html', 'test_utf_characters.md')
+
+	def test_escape_metachars(self):
+		self.compare('test_escape_metachars.html', 'test_escape_metachars.md')

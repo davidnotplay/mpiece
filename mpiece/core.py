@@ -2,7 +2,7 @@
 	mpiece.markdown
 	~~~~~~~~~~~~~~~
 
-	Main class and exception classes.
+	MPiece core
 
 	:license: BSD, see LICENSE for details.
 	:author: David Casado Martinez <dcasadomartinez@gmail.com>
@@ -17,7 +17,7 @@ class MPieceException(Exception):
 		return self.message
 
 
-class RenderFunctionNotFound(MPieceException):
+class RenderFunctionNotFoundException(MPieceException):
 	"""	Render function not found in renderer class.
 	"""
 
@@ -25,7 +25,7 @@ class RenderFunctionNotFound(MPieceException):
 		self.message = 'Function "render_%s" not found in the %s class' % (function_name, class_name)
 
 
-class ParseFunctionNotFound(MPieceException):
+class ParseFunctionNotFoundException(MPieceException):
 	""" Parse function not found in Lexer class.
 	"""
 
@@ -33,7 +33,7 @@ class ParseFunctionNotFound(MPieceException):
 		self.message = 'Function "parse_%s" not found in the "%s" lexer.' % (function_name, class_name)
 
 
-class RegexNotFound(MPieceException):
+class RegexNotFoundException(MPieceException):
 	""" Regex expression not found in Lexer class.
 	"""
 
@@ -41,8 +41,8 @@ class RegexNotFound(MPieceException):
 		self.message = 'Regular expression "regex_%s" not found in the "%s" lexer class. ' % (regex_name, class_name)
 
 
-class InvalidData(MPieceException):
-	""" Parse function in lexer returns an invalid data.
+class InvalidDataException(MPieceException):
+	""" Parse function in Lexer class returns an invalid data.
 	"""
 
 	def __init__(self, function_name, class_name):
@@ -53,16 +53,24 @@ class InvalidData(MPieceException):
 
 
 class Token:
-	"""
-		Token class.
-		:param str render_func: Render function name which the token will use.
-			NOTE: all render function name start with the `render_` prefix. You shoul add the function name without
-			include this prefix.
-		:param str text: markdown text
-		:param dict extras: extra data to render function.
-		:param [str] order: Markdown  elements which will be parsed in the Token text.
-		:param dict extras_to_children: Extra data used in the children parse functions.
+	""" The tokens are the base of the lexer class.
 
+		:param str render_func:
+			Render function name which the token will use.
+
+			.. note::
+				All render function name start with the `render_` prefix.
+				You shoul add the function name without include this prefix.
+
+		:param str text:
+			Text inside of the markdown grammar.
+			This text will be re-parsed to find more markdown grammar.
+		:param dict extras:
+			Extra data to render function.
+			The dictionary elements will convert in arguments for the render function
+		:param [str] order:
+			Markdown grammar elements that the lexer will find in the token text.
+		:param dict extras_to_children: Extra data used in the children parse functions.
 	"""
 
 	def __init__(self, render_func, text=None, extras={}, order=[], extras_to_children={}):
@@ -103,7 +111,7 @@ class MPiece(object):
 		main_token = self.lexer.get_main_token(text)
 		main_token = self.parse_str_token(main_token)
 		text = self.parse_token_str(main_token.text)
-		output = self.lexer.post_process_text(text)
+		output = self.renderer.post_process_text(text)
 
 		return output
 
@@ -125,7 +133,7 @@ class MPiece(object):
 				regex = self.lexer.all_regex[element]
 
 			except KeyError:
-				raise RegexNotFound(element, self.lexer.__class__.__name__)
+				raise RegexNotFoundException(element, self.lexer.__class__.__name__)
 
 			text = regex.sub(self.replace_str_token(element, father_extras), text)
 
@@ -136,38 +144,49 @@ class MPiece(object):
 
 		def _replace_regex(mo):
 			try:
-				if not extras_to_children:
-					result = self.lexer.all_parse_func[element](mo)
-				else:
-					result = self.lexer.all_parse_func[element](mo, **extras_to_children)
-
-				if isinstance(result, str):
-					return result
+				parse_func = self.lexer.all_parse_func[element]
 			except KeyError:
-				raise ParseFunctionNotFound(element, self.lexer.__class__.__name__)
+				raise ParseFunctionNotFoundException(element, self.lexer.__class__.__name__)
 
-			if isinstance(result, Token):
-				result = [result]
+			if not extras_to_children:
+				# parse function without extra for childrens.
+				result = parse_func(mo)
+			else:
+				# parse function with extras for children.
+				result = parse_func(mo, **extras_to_children)
 
 			if not isinstance(result, (list, tuple)):
-				raise InvalidData(self.lexer.get_parse_func(element).__name__, self.lexer.__class__.__name__)
+				result = [result]
 
 			str_r = ''
 			for r in result:
-				# parse token text
-				r = self.parse_str_token(r)
+
+				if isinstance(r, str):
+					# r is str add to main str and continue.
+					str_r += r
+					continue
+
+				if isinstance(r, Token):
+					# r is token. It is parsed.
+					r = self.parse_str_token(r)
+				else:
+					# r isn't a str or a Token
+					raise InvalidDataException(parse_func.__name__, self.lexer.__class__.__name__)
 
 				# Render token
 				try:
 					render_func = self.renderer.all_render_funcs[r.render_func]
 				except KeyError:
-					raise RenderFunctionNotFound(r.render_func, self.__class__.__name__)
+					raise RenderFunctionNotFoundException(r.render_func, self.__class__.__name__)
 
 				if r.has_text:
+					# render with text.
 					r.render_text = render_func(text=r.text, **r.extras)
 				else:
+					# render without text
 					r.render_text = render_func(**r.extras)
 
+				# add token to token list
 				str_r += self.TOKEN_STR % self.token_list_length
 				self.token_list_length += 1
 				self.token_list.append(r)
@@ -179,7 +198,6 @@ class MPiece(object):
 		return self.token_list[int(mo.group('number'))].render_text
 
 	def parse_token_str(self, text):
-
 		replace_func = self.replace_token_str
 		regex = self.lexer.regex_token
 		text, changes = regex.subn(replace_func, text)

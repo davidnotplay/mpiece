@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
 	style_filename = 'file://%s' % os.path.join(dir_base, 'data/style.css')
 	html = (
-		'<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Markdown Advance</title>'
+		'<!DOCTYPE html><html><head><meta charset="UTF-8"><title>MPiece - markdown parser.</title>'
 		'<link href="%s" rel="stylesheet" type="text/css"></head>'
 		'<body>%s</body>'
 	) % (style_filename, text)
