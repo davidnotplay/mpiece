@@ -239,13 +239,13 @@ Add emojis in the markdown text.
 
 .. code:: text
 	
-	Markdown text :emoji1: continue :XD: continue :emoji_not_exists: end.
+	Markdown text :emoji1: continue :XD: continue :not_exists: end.
 
 .. code:: html
 
     <p>
         Markdown text <span class="css-emoji1"></span> continue <span class="emojis-emoji-smiley"></span>
-       :emoji_not_exists: end.
+       :not_exists: end.
     </p>
 
 
@@ -301,7 +301,7 @@ Now starting making the lexer.
             emoji_css = self.emoji_list.get(emoji, False)
             
             # check if the emoji exists
-            if not emoji_css
+            if not emoji_css:
             	# emoji doesn't exits. return the same string
             	return ':%s:' % emoji
 
@@ -339,7 +339,7 @@ Emoji grammar is added to the end of order_inline.
             emoji_css = self.emoji_list.get(emoji, False)
             
             # check if the emoji exists
-            if not emoji_css
+            if not emoji_css:
             	# emoji doesn't exits. return the same string
             	return ':%s:' % emoji
 
@@ -377,7 +377,7 @@ Emoji grammar is added to the end of order_inline.
             emoji_css = self.emoji_list.get(emoji, False)
             
             # check if the emoji exists
-            if not emoji_css
+            if not emoji_css:
                 # emoji doesn't exits. return the same string
                 return ':%s:' % emoji
 
@@ -387,6 +387,6 @@ Emoji grammar is added to the end of order_inline.
 
     class EmojiRenderer(HtmlRenderer):
         def render_emojis(self, emoji_css_class):
-        return '<span class="%s"></span>' % emoji_css_class
+            return '<span class="%s"></span>' % emoji_css_class
 
     
