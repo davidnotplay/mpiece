@@ -17,9 +17,10 @@ It is important if you want add new grammar.
 	:target: _static/main_order.png
 
 
-:class:`mpiece.lexer.Lexer` has 2 main order attrs:
+:class:`mpiece.lexer.Lexer` has 3 main order attrs:
     - :attr:`mpiece.lexer.Lexer.order_block`
     - :attr:`mpiece.lexer.Lexer.order_inline`
+    - :attr:`mpiece.lexer.Lexer.order_initial`
 
 When you make a new grammar you should modify the one of this attributes for add the new grammar to the lexer.
 
@@ -224,7 +225,7 @@ We want convert the markdown text in html code, so, we will use the ``HtmlRender
     	def render_color(self, text, color):
     		# convert html characters
     		text = self.escape(text)
-    		return '<span class="color:#%s">%s' % (color, text)
+    		return '<span class="color:#%s">%s</span>' % (color, text)
 
 
 With this code, the example is complete. Now you can use this new lexer and renderer to convert markdown text in html

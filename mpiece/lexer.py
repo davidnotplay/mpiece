@@ -64,6 +64,29 @@ class Lexer(object):
 				print(result)
 				# output: <p><em>italic</em>, **this is bold**, `this is a code inline`</p>
 
+		:ivar str escape_chars:
+			List of characters escaped if they has the character \ before.
+
+			:Initial value:
+				'\*~\`\_[]()\\>.'
+
+		:ivar [str] order_inline:
+			Order of the inline elements.
+
+			:Initial value:
+				['escape_backslash', 'code_inline', 'image', 'link', 'bold', 'italic', 'bold', 'underline', 'strike']
+
+		:ivar [str] order_block:
+			Order of the block elements.
+
+			:Initial value:
+				[fenced_code', 'table', 'ulist', 'olist', 'blockquote', 'header', 'header2', 'break_line', 'new_line']
+
+		:ivar [str] initial_order:
+			Define the initial order for the lexer class.
+
+			:Initial value:
+				self.order_block + self.order_inline
 	"""
 
 	# Main regular expression. Transform tokens in texts
@@ -123,23 +146,12 @@ class Lexer(object):
 	regex_table_body_row = re.compile(r'^[ ]*(?P<row>\|[^\n]+)', re.M)
 	regex_table_body_cell = re.compile(r'^(?P<cells>\|[^\n]+?)\|?$')
 
-	# main orders
-	#: Order of the block elements
-	order_block = [
-		'fenced_code', 'table', 'ulist', 'olist', 'blockquote', 'header', 'header2', 'break_line', 'new_line'
-	]
-	#: Order of the inline elements
-	order_inline = ['escape_backslash', 'code_inline', 'image', 'link', 'bold', 'italic', 'bold', 'underline', 'strike']
-
-	# other variables
-	#: List of characters escaped if they has the character \ before.
-	escape_chars = '*~`_[]()\\>.'
-
 	def __init__(self, exclude=set(), tab_size=4, escape_chars=''):
 		self.tab_size = tab_size
-		self.escape_chars += escape_chars
+		self.escape_chars = '*~`_[]()\\>.' + escape_chars
 		self.exclude = getattr(self, 'exclude', set()) | exclude
 
+		# Get al regex expressions and parse functions.
 		self.all_regex = {}
 		self.all_parse_func = {}
 		for item in dir(self):
@@ -148,6 +160,14 @@ class Lexer(object):
 
 			if item.startswith('parse_'):
 				self.all_parse_func[item[6:]] = getattr(self, item)
+
+		self.order_inline = [
+			'escape_backslash', 'code_inline', 'image', 'link', 'bold', 'italic', 'bold', 'underline', 'strike'
+		]
+		self.order_block = [
+			'fenced_code', 'table', 'ulist', 'olist', 'blockquote', 'header', 'header2', 'break_line', 'new_line'
+		]
+		self.order_initial = self.order_block + self.order_inline
 
 		self.define_order()
 
@@ -158,9 +178,11 @@ class Lexer(object):
 		self.order_ulist = ['ulist_item']
 		self.order_subulist = ['ulist_item']
 		self.order_ulist_item = list(self.order_block)
+
 		try:
 			self.order_ulist_item.remove('fenced_code')
 			self.order_ulist_item.remove('table')
+
 			# Replace u/olist to u/osublist and new_line to simple_new_line
 			self.order_ulist_item[self.order_ulist_item.index('ulist')] = 'usublist'
 			self.order_ulist_item[self.order_ulist_item.index('olist')] = 'osublist'
@@ -220,9 +242,6 @@ class Lexer(object):
 
 		except ValueError:
 			pass
-
-		# initial order
-		self.order_initial = self.order_block + self.order_inline
 
 	# Parse functions
 	def parse_fenced_code(self, mo):
@@ -413,7 +432,7 @@ class Lexer(object):
 		""" Process the text before be rendered.
 
 			:param str text: Markdown text.
-			:return str:
+			:return str: text post processed.
 		"""
 		text = text.replace('\r\n', '\n').replace('\r', '\n').expandtabs(self.tab_size)
 		return '\n' + text + '\n\n'

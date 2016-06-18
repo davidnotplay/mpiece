@@ -39,5 +39,5 @@ Lexers list
 -----------
 
 .. autoclass:: mpiece.lexer.Lexer
-	:members: escape_chars, order_block, order_inline, define_order, pre_process_text
+	:members: define_order, pre_process_text
 
