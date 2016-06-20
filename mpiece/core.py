@@ -8,6 +8,8 @@
 	:author: David Casado Martinez <dcasadomartinez@gmail.com>
 """
 
+from mpiece.lexer import Token
+
 
 class MPieceException(Exception):
 	""" Base MPiece exception
@@ -47,40 +49,9 @@ class InvalidDataException(MPieceException):
 
 	def __init__(self, function_name, class_name):
 		self.message = (
-			'Function "%s.parse_%s" returns an invalid data. The function should return a Token object, list\'s '
-			'Token object or a string.' % (class_name, function_name)
+			'Function "%s.%s" returns an invalid data. The function should return a Token object, string or list\'s '
+			'of Token objects/string.' % (class_name, function_name)
 		)
-
-
-class Token:
-	""" The tokens are the base of the lexer class.
-
-		:param str render_func:
-			Render function name which the token will use.
-
-			.. note::
-				All render function name start with the `render_` prefix.
-				You shoul add the function name without include this prefix.
-
-		:param str text:
-			Text inside of the markdown grammar.
-			This text will be re-parsed to find more markdown grammar.
-		:param dict extras:
-			Extra data to render function.
-			The dictionary elements will convert in arguments for the render function
-		:param [str] order:
-			Markdown grammar elements that the lexer will find in the token text.
-		:param dict extras_to_children: Extra data used in the children parse functions.
-	"""
-
-	def __init__(self, render_func, text=None, extras={}, order=[], extras_to_children={}):
-		self.render_func = render_func
-		self.has_text = text is not None
-		self.text = text or ''
-		self.extras = extras
-		self.order = order
-		self.render_text = ''
-		self.extras_to_children = extras_to_children
 
 
 class MPiece(object):
@@ -177,7 +148,7 @@ class MPiece(object):
 				try:
 					render_func = self.renderer.all_render_funcs[r.render_func]
 				except KeyError:
-					raise RenderFunctionNotFoundException(r.render_func, self.__class__.__name__)
+					raise RenderFunctionNotFoundException(r.render_func, self.renderer.__class__.__name__)
 
 				if r.has_text:
 					# render with text.

@@ -9,7 +9,41 @@
 """
 
 import re
-from mpiece.core import Token
+
+
+class Token:
+	""" The token save info about markdown grammar.
+		They are used in the parse function in lexer class.
+
+		:param str render_func:
+			Render function name which the token will use.
+
+			.. note::
+				All render function name start with the `render_` prefix.
+				You shoul add the function name without include this prefix.
+
+		:param str text:
+			Text inside of the markdown grammar.
+			This text will be re-parsed to find more markdown grammar.
+
+		:param dict extras:
+			Extra data to render function.
+			The dictionary elements will convert in arguments for the render function
+
+		:param [str] order:
+			Markdown grammar elements that the lexer will find in the token text.
+
+		:param dict extras_to_children: Extra data used in the children parse functions.
+	"""
+
+	def __init__(self, render_func, text=None, extras={}, order=[], extras_to_children={}):
+		self.render_func = render_func
+		self.has_text = text is not None
+		self.text = text or ''
+		self.extras = extras
+		self.order = order
+		self.render_text = ''
+		self.extras_to_children = extras_to_children
 
 
 class Lexer(object):
@@ -125,12 +159,12 @@ class Lexer(object):
 	regex_usublist = re.compile(r'^(?P<list>(?P<iden>[ ]+)(?P<start>[*-])[ ](?:.*\n(?=(?P=iden)))*[^\n]+)', re.M)
 	regex_blockquote = re.compile(r'(?P<blockquote>^(?:[ ]*\>[^\n]*\n?)+)', re.M)
 	regex_header = re.compile(r'^[ ]*(?P<level>#+) (?P<text>.*?)(?:[ ](?P=level))?$', re.M)
-	regex_header2 = re.compile(r'^(?P<text>[^\n]+)\n(?P<sym>[\-=]{3,})$', re.M)
+	regex_header2 = re.compile(r'^(?P<text>[^\n]+)\n(?P<sym>=+|-+|~+)$', re.M)
 	regex_fenced_code = re.compile(
 		r'[ ]*`{3}[ ]*(?P<lang>[^\n"]+?)?(?: ?(?!\\)"(?P<title>[^\n]+)(?!\\)")?\n(?P<code>.*?)\n[ ]*`{3}',
 		re.S
 	)
-	regex_break_line = re.compile(r'^([*\-_]{3,})$', re.M)
+	regex_break_line = re.compile(r'^(?:-{3,}|\*{3,}|_{3,})$', re.M)
 	regex_footnotes = re.compile(
 		r'^\[\^(?P<name>.+)\]:[ ]*(?P<value>[^\n]*(?=\n)(?:\n(?P<ind>[ ]+)[^\n]*(?=\n))?(?:\n(?P=ind)[^\n]*(?=\n))*)',
 		re.M
@@ -167,8 +201,6 @@ class Lexer(object):
 		self.order_block = [
 			'fenced_code', 'table', 'ulist', 'olist', 'blockquote', 'header', 'header2', 'break_line', 'new_line'
 		]
-		self.order_initial = self.order_block + self.order_inline
-
 		self.define_order()
 
 	def define_order(self):
@@ -243,6 +275,9 @@ class Lexer(object):
 		except ValueError:
 			pass
 
+		# Define order initial.
+		self.order_initial = self.order_block + self.order_inline
+
 	# Parse functions
 	def parse_fenced_code(self, mo):
 		lang = mo.group('lang')
@@ -261,7 +296,14 @@ class Lexer(object):
 
 	def parse_header2(self, mo):
 		text = mo.group('text')
-		level = 1 if mo.group('sym').startswith('=') else 2
+		sym = mo.group('sym')[0]
+
+		if sym == '=':
+			level = 1
+		elif sym == '-':
+			level = 2
+		else:
+			level = 3
 		return Token('header', text, extras={'level': level}, order=self.order_header)
 
 	def parse_olist(self, mo):

@@ -4,3 +4,124 @@ body{
 	font-size: 16px;
 }
 
+
+.code-fenced{
+	border: 1px solid #444;
+	background: #eee;
+	margin-bottom: 10px;
+}
+
+.code-fenced > .title{
+	background: #444;
+	color: #eee;
+	padding: 4px 2px;
+}
+
+.code-fenced > pre{
+	padding: 5px;
+}
+
+code{
+	background: #ddd;
+}
+
+a{
+	color: #3983D3;
+}
+
+ul > li > p{
+	padding: 0;
+	margin: 5px 0;
+}
+
+blockquote{
+	background: #eee;
+	border-left: 2px solid #aaa;
+	padding: 5px;
+}
+
+table{
+	border: 1px solid #888;
+	border-collapse: collapse
+}
+
+table td, table th{
+	border: 1px solid #888;
+	padding: 3px;
+}
+
+.twa {
+  display: inline-block;
+  height: 1em;
+  width: 1em;
+  margin: 0 .05em 0 .1em;
+  vertical-align: -0.1em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 1em 1em; }
+
+.twa-lg {
+  height: 1.33em;
+  width: 1.33em;
+  margin: 0 0.0665em 0 0.133em;
+  vertical-align: -0.133em;
+  background-size: 1.33em 1.33em; }
+
+.twa-2x {
+  height: 2em;
+  width: 2em;
+  margin: 0 0.1em 0 0.2em;
+  vertical-align: -0.2em;
+  background-size: 2em 2em; }
+
+.twa-3x {
+  height: 3em;
+  width: 3em;
+  margin: 0 0.15em 0 0.3em;
+  vertical-align: -0.3em;
+  background-size: 3em 3em; }
+
+.twa-4x {
+  height: 4em;
+  width: 4em;
+  margin: 0 0.2em 0 0.4em;
+  vertical-align: -0.4em;
+  background-size: 4em 4em; }
+
+.twa-5x {
+  height: 5em;
+  width: 5em;
+  margin: 0 0.25em 0 0.5em;
+  vertical-align: -0.5em;
+  background-size: 5em 5em; }
+
+.twa-smile {
+  background-image: url("https://twemoji.maxcdn.com/svg/1f604.svg"); }
+
+.twa-laughing {
+  background-image: url("https://twemoji.maxcdn.com/svg/1f606.svg"); }
+
+.twa-blush {
+  background-image: url("https://twemoji.maxcdn.com/svg/1f60a.svg"); }
+
+.twa-smiley {
+  background-image: url("https://twemoji.maxcdn.com/svg/1f603.svg"); }
+
+.twa-relaxed {
+  background-image: url("https://twemoji.maxcdn.com/svg/263a.svg"); }
+
+.twa-smirk {
+  background-image: url("https://twemoji.maxcdn.com/svg/1f60f.svg"); }
+
+.twa-heart-eyes {
+  background-image: url("https://twemoji.maxcdn.com/svg/1f60d.svg"); }
+
+.twa-kissing-heart {
+  background-image: url("https://twemoji.maxcdn.com/svg/1f618.svg"); }
+
+.twa-kissing-closed-eyes {
+  background-image: url("https://twemoji.maxcdn.com/svg/1f61a.svg"); }
+
+.twa-flushed {
+  background-image: url("https://twemoji.maxcdn.com/svg/1f633.svg"); }
+  

@@ -4,7 +4,7 @@ Make markdown Grammar
 Token
 -----
 
-.. autoclass:: mpiece.core.Token
+.. autoclass:: mpiece.lexer.Token
 
 Grammar order
 -------------
@@ -101,8 +101,7 @@ The parse function process the result of the python function ``re.sub`` in our r
 
 .. code:: python
 
-    from mpiece.lexer import Lexer
-    from mpiece.core import Token
+    from mpiece.lexer import Lexer, Token
     import re
 
     class CustomLexer(Lexer):
@@ -138,8 +137,7 @@ Define the order using the function ``Lexer.define_order()`` method.
 
 .. code:: python
 
-    from mpiece.lexer import Lexer
-    from mpiece.core import Token
+    from mpiece.lexer import Lexer, Token
     import re
 
     class CustomLexer(Lexer):
@@ -183,8 +181,7 @@ We want convert the markdown text in html code, so, we will use the ``HtmlRender
 
 .. code:: python
 
-    from mpiece.lexer import Lexer
-    from mpiece.core import Token
+    from mpiece.lexer import Lexer, Token
     from mpiece.renderer import HtmlRenderer
     import re
 
@@ -282,8 +279,7 @@ Now starting making the lexer.
 
 .. code:: python
 
-    from mpiece.lexer import Lexer
-    from mpiece.core import Token
+    from mpiece.lexer import Lexer, Token
     import re
 
 
@@ -316,8 +312,7 @@ Emoji grammar is added to the end of order_inline.
 
 .. code:: python
 
-    from mpiece.lexer import Lexer
-    from mpiece.core import Token
+    from mpiece.lexer import Lexer, Token
     import re
 
 
@@ -353,8 +348,7 @@ Emoji grammar is added to the end of order_inline.
 
 .. code:: python
 
-    from mpiece.lexer import Lexer
-    from mpiece.core import Token
+    from mpiece.lexer import Lexer, Token
     from mpiece.renderer import HtmlRenderer
     import re
 
